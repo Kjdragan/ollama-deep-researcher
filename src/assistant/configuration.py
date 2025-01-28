@@ -1,30 +1,46 @@
+"""Configuration management for the research assistant.
+
+This module provides configuration classes and utilities for managing
+research assistant settings and runtime parameters."""
+
 import os
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass
 from typing import Any, Optional
+
 from dotenv import load_dotenv
-
-load_dotenv()  # Load environment variables from .env file
-
 from langchain_core.runnables import RunnableConfig
-from typing_extensions import Annotated
+
+# Load environment variables at module import
+load_dotenv()
 
 @dataclass(kw_only=True)
 class Configuration:
-    """The configurable fields for the research assistant."""
+    """Configuration parameters for the research assistant.
+    
+    Attributes:
+        max_web_research_loops: Maximum number of research iterations.
+        model: Name of the DeepSeek chat model to use.
+    """
     max_web_research_loops: int = 3
-    model: str = "deepseek-chat"  # DeepSeek chat model
+    model: str = "deepseek-chat"
 
     @classmethod
     def from_runnable_config(
         cls, config: Optional[RunnableConfig] = None
     ) -> "Configuration":
-        """Create a Configuration instance from a RunnableConfig."""
-        configurable = (
-            config["configurable"] if config and "configurable" in config else {}
-        )
-        values: dict[str, Any] = {
-            f.name: os.environ.get(f.name.upper(), configurable.get(f.name))
-            for f in fields(cls)
-            if f.init
-        }
-        return cls(**{k: v for k, v in values.items() if v})
+        """Create a Configuration instance from a RunnableConfig.
+        
+        Args:
+            config: Optional RunnableConfig instance with configuration parameters.
+            
+        Returns:
+            Configuration: New instance with parameters from config.
+        """
+        if not config:
+            return cls()
+            
+        config_dict = config.get("configurable", {})
+        return cls(**{
+            k: v for k, v in config_dict.items()
+            if k in [f.name for f in cls.__dataclass_fields__.values()]
+        })
