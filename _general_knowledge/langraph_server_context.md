@@ -1,21 +1,3 @@
-Metadata-Version: 2.2
-Name: ollama-deep-researcher
-Version: 0.0.1
-Summary: Lightweight web research and summarization assistant.
-Author: Lance Martin
-License: MIT
-Requires-Python: >=3.9
-Description-Content-Type: text/markdown
-Requires-Dist: langgraph>=0.2.55
-Requires-Dist: langchain-community>=0.3.9
-Requires-Dist: tavily-python>=0.5.0
-Requires-Dist: langchain-ollama>=0.2.1
-Requires-Dist: openai>=1.60.2
-Requires-Dist: python-dotenv>=1.0.1
-Provides-Extra: dev
-Requires-Dist: mypy>=1.11.1; extra == "dev"
-Requires-Dist: ruff>=0.6.1; extra == "dev"
-
 # Ollama Deep Researcher
 
 Ollama Deep Researcher is a fully local web research assistant that uses any LLM hosted by [Ollama](https://ollama.com/search). Give it a topic and it will generate a web search query, gather web search results (via [Tavily](https://www.tavily.com/) by default), summarize the results of web search, reflect on the summary to examine knowledge gaps, generate a new search query to address the gaps, search, and improve the summary for a user-defined number of cycles. It will provide the user a final markdown summary with all sources used. 
